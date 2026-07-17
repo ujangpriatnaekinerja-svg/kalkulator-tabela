@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator PM-AAS BPP Karangjaya - Sistem Tabela</title>
+    <style>
+        :root {
+            --primary-color: #1b5e20;
+            --primary-light: #e8f5e9;
+            --secondary-color: #f9a825;
+            --text-color: #333;
+            --bg-color: #f4f6f4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            padding: 25px;
+            border-top: 8px solid var(--primary-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 22px;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 25px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #444;
+            font-size: 14px;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            background-color: #0d47a1;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .conversion-info {
+            background-color: #f1f8e9;
+            border-left: 4px solid #81c784;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .benih-flash-box {
+            background-color: #e0f2f1;
+            border: 2px solid #004d40;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .benih-flash-box h2 {
+            margin: 0 0 5px 0;
+            color: #004d40;
+            font-size: 15px;
+            text-transform: uppercase;
+        }
+
+        .benih-counter {
+            font-size: 36px;
+            font-weight: 900;
+            color: #00796b;
+            margin-bottom: 5px;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .result-table th {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .badge-time {
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            display: inline-block;
+            text-align: center;
+            width: 80px;
+        }
+        .bg-pra { background-color: #e65100; }
+        .bg-sebar { background-color: #00796b; }
+        .bg-pupuk { background-color: #1565c0; }
+        .bg-purna { background-color: #c62828; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Kalkulator PM-AAS Sistem Tabela</h1>
+        <p>Formulasi Khusus Tanam Benih Langsung - BPP Karangjaya</p>
+    </div>
+
+    <!-- INPUT DATA LAHAN -->
+    <div class="section-title">1. Parameter Luas Lahan Binaaan</div>
+    <div class="form-row">
+        <div class="form-group" style="flex: 2;">
+            <label for="luasInput">Luas Lahan Petani:</label>
+            <input type="number" id="luasInput" placeholder="Masukkan besaran luas" step="any">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label for="satuanLahan">Satuan Luas:</label>
+            <select id="satuanLahan">
+                <option value="bata">Bata / Ubin</option>
+                <option value="m2">Meter Persegi (m²)</option>
+                <option value="ha" selected>Hektar (ha)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="statusP">Status Kadar P Tanah:</label>
+            <select id="statusP">
+                <option value="Rendah">Rendah (SP-36: 100 kg/ha)</option>
+                <option value="Sedang">Sedang (SP-36: 75 kg/ha)</option>
+                <option value="Tinggi">Tinggi (SP-36: 50 kg/ha)</option>
+            </select>
+        </div>
+    </div>
+
+    <button onclick="hitungTabelaAAS()">Kalkulasikan Kebutuhan & Jadwal SOP</button>
+
+    <!-- HASIL KALKULASI & JADWAL SOP TABELA -->
+    <div class="result-container" id="resultContainer">
+        <div class="conversion-info" id="conversionInfo"></div>
+        
+        <div class="benih-flash-box">
+            <h2>Total Benih Unggul Tabela (75 Kg/ha):</h2>
+            <div class="benih-counter"><span id="flashBenih">0</span> Kg</div>
+            <div style="font-size: 13px; font-weight: 600; color: #004d40;">Direndam Fungisida Perendam 24 Jam & Diperam Sampai Keluar Mata Tunas</div>
+        </div>
+
+        <div class="section-title">2. Urutan Kerja & Logistik Lahan (SOP Tabela Buku Saku)</div>
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">Jadwal Kerja</th>
+                    <th>Fase / Kegiatan</th>
+                    <th>Kebutuhan Sarana Produksi</th>
+                    <th>Instruksi Teknis Lapangan (Buku Saku)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge-time bg-pra">H-3 s.d H-1 Sebar</span></td>
+                    <td><strong>Proteksi Gulma Pra-Tumbuh</strong></td>
+                    <td>• Herbisida Pra-Tumbuh: <span id="herbi_pra">0</span> Liter (<span id="herbi_pra_ml">0</span> mL)</td>
+                    <td><strong>Wajib diaplikasikan SEBELUM benih disebar.</strong> Semprot merata pada tanah macak-macak yang sudah rata sempurna untuk mematikan biji rumput. Gunakan bahan aktif seperti <em>Pretilaklor</em>.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-time bg-sebar">0 HSS</span></td>
+                    <td><strong>Penyebaran Benih (Tabela)</strong></td>
+                    <td>
+                        • Benih Padi: <span id="tab_benih">0</span> Kg<br>
+                        • Pupuk Organik: <span id="tab_organik">0</span> Kg<br>
+                        • SP-36 (Dasar): <span id="tab_sp36">0</span> Kg
+                    </td>
+                    <td>Sebar benih yang sudah berkecambah (keluar mata tunas) merata di atas petakan. Aplikasikan Organik Padat dan 100% SP-36 sebagai pupuk dasar. Kondisi air wajib macak-macak/kering lembap agar benih tidak busuk.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-time bg-purna">10 - 15 HSS</span></td>
+                    <td><strong>Koreksi Gulma Susulan</strong></td>
+                    <td>• Herbisida Purna-Tumbuh: Sesuai kebutuhan spot gulma</td>
+                    <td>Jika ada gulma yang lolos/tumbuh (daun 2-3), lakukan penyemprotan selektif menggunakan herbisida purna-tumbuh aman tabela (contoh bahan aktif: <em>Bispiribak-sodium</em>).</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-time bg-pupuk">15 HSS</span></td>
+                    <td>Pemupukan Susulan I & Imun</td>
+                    <td>
+                        • NPK 15-15-15: <span id="tab_npk1">0</span> Kg<br>
+                        • Urea: <span id="tab_urea1">0</span> Kg<br>
+                        • Silika Cair: <span id="tab_silika1">0</span> Liter
+                    </td>
+                    <td>Aplikasi pupuk makro tahap awal untuk memacu anakan. Semprot Silika Cair dosis pertama untuk ketahanan batang dari serangan OPT.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-time bg-pupuk">30 HSS</span></td>
+                    <td>Pemupukan Susulan II & Imun</td>
+                    <td>
+                        • NPK 15-15-15: <span id="tab_npk2">0</span> Kg<br>
+                        • Urea: <span id="tab_urea2">0</span> Kg<br>
+                        • Silika Cair: <span id="tab_silika2">0</span> Liter
+                    </td>
+                    <td>Aplikasi pupuk makro fase anakan maksimum. Semprot Silika Cair dosis kedua untuk memperkuat dinding sel tanaman padi.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-time bg-pupuk">45 HSS</span></td>
+                    <td>Pemupukan Fase Bunting</td>
+                    <td>
+                        • Urea: <span id="tab_urea3">0</span> Kg<br>
+                        • Silika Cair: <span id="tab_silika3">0</span> Liter
+                    </td>
+                    <td>Fase Primordia (Bunting). Kontrol warna daun dengan BWD sebelum sebar Urea. Semprot Silika Cair dosis ketiga untuk melindungi daun bendera dari potong leher/blas.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function hitungTabelaAAS() {
+        const inputLuas = parseFloat(document.getElementById('luasInput').value);
+        const satuan = document.getElementById('satuanLahan').value;
+        const statusP = document.getElementById('statusP').value;
+
+        if (isNaN(inputLuas) || inputLuas <= 0) {
+            alert("Silakan masukkan besaran luas lahan!");
+            return;
+        }
+
+        let luasHa = 0;
+        let infoText = "";
+
+        if (satuan === "ha") {
+            luasHa = inputLuas;
+            infoText = `Luas Lahan Terbaca: <strong>${formatAngka(luasHa.toFixed(4))} ha</strong>`;
+        } else if (satuan === "m2") {
+            luasHa = inputLuas / 10000;
+            infoText = `Hasil Konversi: <strong>${formatAngka(inputLuas)} m²</strong> = <strong>${formatAngka(luasHa.toFixed(5))} ha</strong>`;
+        } else if (satuan === "bata") {
+            const luasM2 = inputLuas * 14.0625;
+            luasHa = luasM2 / 10000;
+            infoText = `Hasil Konversi: <strong>${formatAngka(inputLuas)} Bata</strong> (~${formatAngka(luasM2.toFixed(2))} m²) = <strong>${formatAngka(luasHa.toFixed(5))} ha</strong>`;
+        }
+
+        // Rumus Logistik berbasis Buku Saku
+        const benihTotal = 75 * luasHa;
+        const herbiTotal = 2 * luasHa; // Basis 2 Liter/Ha
+        const herbiMl = herbiTotal * 1000;
+        const organikTotal = 2000 * luasHa;
+        
+        let sp36PerHa = statusP === "Rendah" ? 100 : (statusP === "Sedang" ? 75 : 50);
+        const sp36Total = sp36PerHa * luasHa;
+        
+        const npkTotal = 400 * luasHa;
+        const ureaTotal = 300 * luasHa;
+
+        // Distribusi Output ke Tabel HTML
+        document.getElementById('flashBenih').innerText = formatAngka(benihTotal.toFixed(1));
+        document.getElementById('herbi_pra').innerText = formatAngka(herbiTotal.toFixed(2));
+        document.getElementById('herbi_pra_ml').innerText = formatAngka(herbiMl.toFixed(0));
+        
+        document.getElementById('tab_benih').innerText = formatAngka(benihTotal.toFixed(1));
+        document.getElementById('tab_organik').innerText = formatAngka(organikTotal.toFixed(0));
+        document.getElementById('tab_sp36').innerText = formatAngka(sp36Total.toFixed(1));
+        
+        // Pembagian Pupuk Susulan I dan II
+        document.getElementById('tab_npk1').innerText = formatAngka((npkTotal * 0.4).toFixed(1));
+        document.getElementById('tab_urea1').innerText = formatAngka((ureaTotal * 0.3).toFixed(1));
+        document.getElementById('tab_silika1').innerText = formatAngka((1 * luasHa).toFixed(2));
+        
+        document.getElementById('tab_npk2').innerText = formatAngka((npkTotal * 0.6).toFixed(1));
+        document.getElementById('tab_urea2').innerText = formatAngka((ureaTotal * 0.4).toFixed(1));
+        document.getElementById('tab_silika2').innerText = formatAngka((1 * luasHa).toFixed(2));
+        
+        // Fase Bunting
+        document.getElementById('tab_urea3').innerText = formatAngka((ureaTotal * 0.3).toFixed(1));
+        document.getElementById('tab_silika3').innerText = formatAngka((1 * luasHa).toFixed(2));
+
+        document.getElementById('conversionInfo').innerHTML = infoText;
+        document.getElementById('resultContainer').style.display = 'block';
+    }
+
+    function formatAngka(val) {
+        return parseFloat(val).toString().replace('.', ',');
+    }
+</script>
+</body>
+</html>
