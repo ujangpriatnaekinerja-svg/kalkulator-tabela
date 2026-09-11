@@ -11,6 +11,7 @@
             --secondary-color: #f9a825;
             --text-color: #333;
             --bg-color: #f4f6f4;
+            --wa-color: #25d366;
         }
 
         body {
@@ -27,7 +28,7 @@
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 800px;
+            max-width: 880px;
             width: 100%;
             padding: 25px;
             border-top: 8px solid var(--primary-color);
@@ -80,7 +81,7 @@
             font-size: 14px;
         }
 
-        input[type="number"], select {
+        input[type="number"], input[type="text"], input[type="date"], select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
@@ -89,7 +90,7 @@
             font-size: 15px;
         }
 
-        button {
+        .btn-main {
             width: 100%;
             background-color: var(--primary-color);
             color: white;
@@ -102,8 +103,36 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        button:hover {
+        .btn-main:hover {
             background-color: #0d47a1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-pdf {
+            flex: 1;
+            background-color: #1565c0;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-wa {
+            flex: 1;
+            background-color: var(--wa-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         .result-container {
@@ -123,7 +152,7 @@
         .benih-flash-box {
             background-color: #e0f2f1;
             border: 2px solid #004d40;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 20px;
             border-radius: 8px;
             text-align: center;
@@ -137,10 +166,34 @@
         }
 
         .benih-counter {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 900;
             color: #00796b;
             margin-bottom: 5px;
+        }
+
+        .biaya-box {
+            background-color: #fffde7;
+            border: 2px solid #fbc02d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .biaya-box h3 {
+            margin: 0 0 10px 0;
+            color: #f57f17;
+            font-size: 16px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .total-biaya {
+            font-size: 26px;
+            font-weight: bold;
+            color: #e65100;
+            text-align: center;
+            margin-bottom: 15px;
         }
 
         .result-table {
@@ -151,7 +204,7 @@
 
         .result-table th, .result-table td {
             border: 1px solid #ddd;
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             font-size: 13px;
             vertical-align: top;
@@ -164,129 +217,326 @@
 
         .badge-time {
             color: white;
-            padding: 4px 8px;
+            padding: 4px 6px;
             border-radius: 4px;
             font-weight: bold;
             font-size: 11px;
             display: inline-block;
             text-align: center;
-            width: 80px;
+            width: 85px;
+            margin-bottom: 3px;
         }
+
+        .tgl-real {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: #1b5e20;
+            background: #e8f5e9;
+            padding: 2px 4px;
+            border-radius: 3px;
+            text-align: center;
+        }
+
         .bg-pra { background-color: #e65100; }
+        .bg-semai { background-color: #7b1fa2; }
         .bg-sebar { background-color: #00796b; }
         .bg-pupuk { background-color: #1565c0; }
         .bg-purna { background-color: #c62828; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border-top: none; max-width: 100%; }
+            .no-print, button, .action-buttons, .section-title:nth-of-type(2) { display: none !important; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="printableArea">
     <div class="header">
         <h1>Kalkulator PM-AAS Sistem Tabela</h1>
-        <p>Formulasi Khusus Tanam Benih Langsung - BPP Karangjaya</p>
+        <p>Formulasi, Estimasi Biaya & Jadwal Tanam - BPP Karangjaya</p>
     </div>
 
-    <!-- INPUT DATA LAHAN -->
-    <div class="section-title">1. Parameter Luas Lahan Binaaan</div>
-    <div class="form-row">
-        <div class="form-group" style="flex: 2;">
-            <label for="luasInput">Luas Lahan Petani:</label>
-            <input type="number" id="luasInput" placeholder="Masukkan besaran luas" step="any">
+    <div class="no-print">
+        <!-- IDENTITAS PETANI, BENIH & JADWAL -->
+        <div class="section-title">1. Data Petani, Varietas Benih & Rencana Jadwal</div>
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label for="namaPetani">Nama Petani / Poktan:</label>
+                <input type="text" id="namaPetani" placeholder="Contoh: Pak Ujang / Poktan Sekar Arum">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="hpPetani">No. WhatsApp (Opsional):</label>
+                <input type="text" id="hpPetani" placeholder="628123456789">
+            </div>
         </div>
-        <div class="form-group" style="flex: 1;">
-            <label for="satuanLahan">Satuan Luas:</label>
-            <select id="satuanLahan">
-                <option value="bata">Bata / Ubin</option>
-                <option value="m2">Meter Persegi (m²)</option>
-                <option value="ha" selected>Hektar (ha)</option>
-            </select>
-        </div>
-    </div>
 
-    <div class="form-row">
-        <div class="form-group">
-            <label for="statusP">Status Kadar P Tanah:</label>
-            <select id="statusP">
-                <option value="Rendah">Rendah (SP-36: 100 kg/ha)</option>
-                <option value="Sedang">Sedang (SP-36: 75 kg/ha)</option>
-                <option value="Tinggi">Tinggi (SP-36: 50 kg/ha)</option>
-            </select>
+        <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+                <label for="varietasBenih">Varietas Benih Padi:</label>
+                <select id="varietasBenih" onchange="toggleCustomVarietas(this.value)">
+                    <option value="Inpari 32" selected>Inpari 32</option>
+                    <option value="Inpari 42 GSR">Inpari 42 GSR</option>
+                    <option value="Ciherang">Ciherang</option>
+                    <option value="Mekongga">Mekongga</option>
+                    <option value="Pajajaran">Pajajaran</option>
+                    <option value="Inpari 30">Inpari 30</option>
+                    <option value="Lainnya">Varietas Lainnya...</option>
+                </select>
+            </div>
+            <div class="form-group" id="groupVarietasLain" style="display: none; flex: 1;">
+                <label for="varietasCustom">Nama Varietas Lainnya:</label>
+                <input type="text" id="varietasCustom" placeholder="Ketik nama varietas">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="tglSebar">Rencana Tanggal Sebar (0 HST):</label>
+                <input type="date" id="tglSebar">
+            </div>
         </div>
-    </div>
 
-    <button onclick="hitungTabelaAAS()">Kalkulasikan Kebutuhan & Jadwal SOP</button>
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label for="luasInput">Luas Lahan Petani:</label>
+                <input type="number" id="luasInput" placeholder="Masukkan besaran luas" step="any">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="satuanLahan">Satuan Luas:</label>
+                <select id="satuanLahan">
+                    <option value="bata">Bata / Ubin</option>
+                    <option value="m2">Meter Persegi (m²)</option>
+                    <option value="ha" selected>Hektar (ha)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="jenisOrganik">Jenis Pupuk Organik Padat Lapangan:</label>
+                <select id="jenisOrganik">
+                    <option value="ayam">Kohe Ayam (Dosis Anjuran: 2 Ton/ha)</option>
+                    <option value="domba">Kohe Domba / Kambing (Dosis Anjuran: 3 Ton/ha)</option>
+                    <option value="sapi">Kohe Sapi (Dosis Anjuran: 5 Ton/ha)</option>
+                    <option value="kompos" selected>Kompos / Organic General (Dosis Anjuran: 1 Ton/ha)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phTanah">Kadar pH Tanah (Hasil Pengukuran):</label>
+                <select id="phTanah">
+                    <option value="sangat_asam">pH ≤ 5.5 (Dolomit: 1.000 kg/ha)</option>
+                    <option value="sedang_asam">pH 5.5 - 6.0 (Dolomit: 500 kg/ha)</option>
+                    <option value="netral" selected>pH > 6.0 (Tidak perlu Dolomit)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="statusP">Status Kadar P Tanah:</label>
+                <select id="statusP">
+                    <option value="Rendah">P Rendah (SP-36: 100 kg/ha)</option>
+                    <option value="Sedang">P Sedang (SP-36: 75 kg/ha)</option>
+                    <option value="Tinggi">P Tinggi (SP-36: 50 kg/ha)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- PARAMETER BIAYA / HARGA SATUAN -->
+        <div class="section-title">2. Asumsi Harga Satuan Input Saprodi (Rp)</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="hargaUrea">Urea /kg (Subsidized):</label>
+                <input type="number" id="hargaUrea" value="1800">
+            </div>
+            <div class="form-group">
+                <label for="hargaNpk">NPK /kg (Subsidized):</label>
+                <input type="number" id="hargaNpk" value="1840">
+            </div>
+            <div class="form-group">
+                <label for="hargaBenih">Benih /kg:</label>
+                <input type="number" id="hargaBenih" value="15000">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="hargaOrganik">Organik Padat /kg:</label>
+                <input type="number" id="hargaOrganik" value="800">
+            </div>
+            <div class="form-group">
+                <label for="hargaHerbi">Herbisida /Liter:</label>
+                <input type="number" id="hargaHerbi" value="85000">
+            </div>
+            <div class="form-group">
+                <label for="hargaPoc">POC & Silika /Liter:</label>
+                <input type="number" id="hargaPoc" value="60000">
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="hitungTabelaAAS()">Kalkulasikan Kebutuhan & Jadwal Tanam</button>
+    </div>
 
     <!-- HASIL KALKULASI & JADWAL SOP TABELA -->
     <div class="result-container" id="resultContainer">
         <div class="conversion-info" id="conversionInfo"></div>
         
         <div class="benih-flash-box">
-            <h2>Total Benih Unggul Tabela (75 Kg/ha):</h2>
+            <h2>Kebutuhan Benih Tabela Varietas <span id="labelVarietasBenih">-</span> (75 Kg/ha):</h2>
             <div class="benih-counter"><span id="flashBenih">0</span> Kg</div>
-            <div style="font-size: 13px; font-weight: 600; color: #004d40;">Direndam Fungisida Perendam 24 Jam & Diperam Sampai Keluar Mata Tunas</div>
+            <div style="font-size: 13px; font-weight: 600; color: #004d40;">Direndam Fungisida/Insektisida 12-24 Jam & Diperam 24-36 Jam (Melentis)</div>
         </div>
 
-        <div class="section-title">2. Urutan Kerja & Logistik Lahan (SOP Tabela Buku Saku)</div>
+        <!-- ESTIMASI BIAYA SAPRODI -->
+        <div class="biaya-box">
+            <h3>Estimasi Biaya Kebutuhan Saprodi Lahan</h3>
+            <div class="total-biaya">Rp <span id="totalBiayaAll">0</span></div>
+            <table class="result-table" style="margin-bottom:0;">
+                <thead>
+                    <tr>
+                        <th>Komponen Saprodi</th>
+                        <th>Jumlah Kebutuhan</th>
+                        <th>Estimasi Biaya</th>
+                    </tr>
+                </thead>
+                <tbody id="biayaTableBody">
+                    <!-- Rincian Biaya Diisi JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TOMBOL AKSI: CETAK PDF & WA -->
+        <div class="action-buttons no-print">
+            <button class="btn-pdf" onclick="window.print()">📥 Cetak / Simpan PDF</button>
+            <button class="btn-wa" onclick="kirimKeWA()">💬 Kirim Jadwal & Biaya via WA</button>
+        </div>
+
+        <div class="section-title">3. Timeline & Jadwal SOP Lapangan Tabela (Juknis PM-AAS)</div>
         <table class="result-table">
             <thead>
                 <tr>
-                    <th style="width: 100px;">Jadwal Kerja</th>
+                    <th style="width: 110px;">Jadwal / Tanggal</th>
                     <th>Fase / Kegiatan</th>
-                    <th>Kebutuhan Sarana Produksi</th>
-                    <th>Instruksi Teknis Lapangan (Buku Saku)</th>
+                    <th>Rekomendasi Merk / Kebutuhan</th>
+                    <th>Instruksi Teknis Lapangan</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><span class="badge-time bg-pra">H-3 s.d H-1 Sebar</span></td>
+                    <td>
+                        <span class="badge-time bg-pra">H-14 s.d H-10</span>
+                        <span class="tgl-real" id="tgl_pratanam">-</span>
+                    </td>
+                    <td><strong>Pembersihan Gulma Pra-Tanam</strong></td>
+                    <td>
+                        • Herbisida Pra-Tanam: <span id="herbi_pratanarn">0</span> Liter<br>
+                        <em>(Glifosat/Parakuat: Gramoxone, Noxone, Roundup)</em>
+                    </td>
+                    <td>Semprot herbisida pra-tanam sistemik/kontak pada tunggul panen & gulma eksisting SEBELUM tanah dibajak.[cite: 1]</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-pra">H-10 s.d H-7</span>
+                        <span class="tgl-real" id="tgl_olah">-</span>
+                    </td>
+                    <td><strong>Pengolahan Tanah & Ameliorasi</strong></td>
+                    <td>
+                        • Kapur Dolomit: <span id="tab_dolomit">0</span> Kg<br>
+                        • Pupuk Organik Padat: <span id="tab_organik">0</span> Kg
+                    </td>
+                    <td>Sebar Dolomit dan Pupuk Organik Padat terfermentasi saat pembajakan/pengolahan tanah pertama.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-pra">H-5 s.d H-3</span>
+                        <span class="tgl-real" id="tgl_pratumbuh">-</span>
+                    </td>
                     <td><strong>Proteksi Gulma Pra-Tumbuh</strong></td>
-                    <td>• Herbisida Pra-Tumbuh: <span id="herbi_pra">0</span> Liter (<span id="herbi_pra_ml">0</span> mL)</td>
-                    <td><strong>Wajib diaplikasikan SEBELUM benih disebar.</strong> Semprot merata pada tanah macak-macak yang sudah rata sempurna untuk mematikan biji rumput. Gunakan bahan aktif seperti <em>Pretilaklor</em>.</td>
-                </tr>
-                <tr>
-                    <td><span class="badge-time bg-sebar">0 HSS</span></td>
-                    <td><strong>Penyebaran Benih (Tabela)</strong></td>
                     <td>
-                        • Benih Padi: <span id="tab_benih">0</span> Kg<br>
-                        • Pupuk Organik: <span id="tab_organik">0</span> Kg<br>
-                        • SP-36 (Dasar): <span id="tab_sp36">0</span> Kg
+                        • Herbisida Pra-Tumbuh: <span id="herbi_pra">0</span> Liter<br>
+                        <em>(Rilof 500 EC / Nabu 50 EC / Sponsor 500 EC)</em>
                     </td>
-                    <td>Sebar benih yang sudah berkecambah (keluar mata tunas) merata di atas petakan. Aplikasikan Organik Padat dan 100% SP-36 sebagai pupuk dasar. Kondisi air wajib macak-macak/kering lembap agar benih tidak busuk.</td>
+                    <td>Semprotkan 3–5 hari sebelum sebar benih pada kondisi tanah macak-macak/tergenang 1-2 cm untuk mematikan biji gulma.[cite: 1]</td>
                 </tr>
                 <tr>
-                    <td><span class="badge-time bg-purna">10 - 15 HSS</span></td>
+                    <td>
+                        <span class="badge-time bg-semai">H-2 (Penyiapan)</span>
+                        <span class="tgl-real" id="tgl_rendam">-</span>
+                    </td>
+                    <td><strong>Perendaman Benih (12-24 Jam)</strong></td>
+                    <td>
+                        • Benih Padi (<span class="nama-benih-inline">Inpari 32</span>): <span id="tab_benih1">0</span> Kg<br>
+                        • Fungisida Perendam (Dithane/Trimix)
+                    </td>
+                    <td>Rendam benih dalam air bersih dicampur fungisida selama 12–24 jam. Buang benih yang mengapung.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-semai">H-1 (Pemeraman)</span>
+                        <span class="tgl-real" id="tgl_peram">-</span>
+                    </td>
+                    <td><strong>Pemeraman Benih (24-36 Jam)</strong></td>
+                    <td>• Karung beras / Daun Pisang Penutup</td>
+                    <td>Tiriskan benih, peram di tempat lembap dan hangat hingga keluar calon akar/tunas (melentis 1–2 mm). Jangan sampai calon akar terlalu panjang.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-sebar">0 HST (Sebar)</span>
+                        <span class="tgl-real" id="tgl_sebar_out">-</span>
+                    </td>
+                    <td><strong>Penyebaran Benih & Pupuk Dasar</strong></td>
+                    <td>
+                        • Benih Melentis (<span class="nama-benih-inline">Inpari 32</span>): <span id="tab_benih2">0</span> Kg<br>
+                        • SP-36 (Opsional): <span id="tab_sp36">0</span> Kg
+                    </td>
+                    <td>Sebar benih melentis secara merata di petakan macak-macak. Aplikasikan SP-36 100% dosis dasar.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-purna">10 - 15 HST</span>
+                        <span class="tgl-real" id="tgl_purna">-</span>
+                    </td>
                     <td><strong>Koreksi Gulma Susulan</strong></td>
-                    <td>• Herbisida Purna-Tumbuh: Sesuai kebutuhan spot gulma</td>
-                    <td>Jika ada gulma yang lolos/tumbuh (daun 2-3), lakukan penyemprotan selektif menggunakan herbisida purna-tumbuh aman tabela (contoh bahan aktif: <em>Bispiribak-sodium</em>).</td>
-                </tr>
-                <tr>
-                    <td><span class="badge-time bg-pupuk">15 HSS</span></td>
-                    <td>Pemupukan Susulan I & Imun</td>
                     <td>
-                        • NPK 15-15-15: <span id="tab_npk1">0</span> Kg<br>
-                        • Urea: <span id="tab_urea1">0</span> Kg<br>
-                        • Silika Cair: <span id="tab_silika1">0</span> Liter
+                        • Herbisida Purna-Tumbuh (Spot Spraying)<br>
+                        <em>(Nominee 100 SC / Rikstar 89 SL / Ally Plus)</em>
                     </td>
-                    <td>Aplikasi pupuk makro tahap awal untuk memacu anakan. Semprot Silika Cair dosis pertama untuk ketahanan batang dari serangan OPT.</td>
+                    <td>Penyemprotan selektif jika ada gulma lolos di antara tanaman utama.[cite: 1]</td>
                 </tr>
                 <tr>
-                    <td><span class="badge-time bg-pupuk">30 HSS</span></td>
-                    <td>Pemupukan Susulan II & Imun</td>
                     <td>
-                        • NPK 15-15-15: <span id="tab_npk2">0</span> Kg<br>
+                        <span class="badge-time bg-pupuk">20 - 25 HST</span>
+                        <span class="tgl-real" id="tgl_pupuk1">-</span>
+                    </td>
+                    <td><strong>Pemupukan Susulan I & Suplemen</strong></td>
+                    <td>
+                        • NPK Majemuk: <span id="tab_npk1">0</span> Kg<br>
+                        • POC: <span id="tab_poc1">0</span> Liter | Silika: <span id="tab_silika1">0</span> Liter
+                    </td>
+                    <td>Aplikasi NPK Majemuk (300 kg/ha). Semprot POC dosis 1 dan Silika dosis 1.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-pupuk">40 - 45 HST</span>
+                        <span class="tgl-real" id="tgl_pupuk2">-</span>
+                    </td>
+                    <td><strong>Pemupukan II & Penguat Batang</strong></td>
+                    <td>
+                        • NPK: <span id="tab_npk2">0</span> Kg | Urea: <span id="tab_urea1">0</span> Kg<br>
+                        • POC: <span id="tab_poc2">0</span> Liter | Silika: <span id="tab_silika2">0</span> Liter
+                    </td>
+                    <td>Aplikasi NPK (100 kg/ha) & Urea (150 kg/ha). Semprot POC dosis 2 dan Silika dosis 2.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="badge-time bg-pupuk">Fase Primordia</span>
+                        <span class="tgl-real" id="tgl_pupuk3">-</span>
+                    </td>
+                    <td><strong>Pemupukan Bunting (Inisiasi Malai)</strong></td>
+                    <td>
                         • Urea: <span id="tab_urea2">0</span> Kg<br>
-                        • Silika Cair: <span id="tab_silika2">0</span> Liter
+                        • POC: <span id="tab_poc3">0</span> Liter | Silika: <span id="tab_silika3">0</span> Liter
                     </td>
-                    <td>Aplikasi pupuk makro fase anakan maksimum. Semprot Silika Cair dosis kedua untuk memperkuat dinding sel tanaman padi.</td>
-                </tr>
-                <tr>
-                    <td><span class="badge-time bg-pupuk">45 HSS</span></td>
-                    <td>Pemupukan Fase Bunting</td>
-                    <td>
-                        • Urea: <span id="tab_urea3">0</span> Kg<br>
-                        • Silika Cair: <span id="tab_silika3">0</span> Liter
-                    </td>
-                    <td>Fase Primordia (Bunting). Kontrol warna daun dengan BWD sebelum sebar Urea. Semprot Silika Cair dosis ketiga untuk melindungi daun bendera dari potong leher/blas.</td>
+                    <td>Aplikasi Urea sisa (150 kg/ha). Semprot POC dosis 3 dan Silika dosis 3 untuk melindungi daun bendera.</td>
                 </tr>
             </tbody>
         </table>
@@ -294,71 +544,268 @@
 </div>
 
 <script>
+    document.getElementById('tglSebar').valueAsDate = new Date();
+
+    let globalHasilWA = {};
+
+    function toggleCustomVarietas(val) {
+        const groupCustom = document.getElementById('groupVarietasLain');
+        if (val === "Lainnya") {
+            groupCustom.style.display = "block";
+        } else {
+            groupCustom.style.display = "none";
+        }
+    }
+
     function hitungTabelaAAS() {
+        const namaPetani = document.getElementById('namaPetani').value || "Bapak/Ibu Petani";
         const inputLuas = parseFloat(document.getElementById('luasInput').value);
         const satuan = document.getElementById('satuanLahan').value;
+        const jenisOrganik = document.getElementById('jenisOrganik').value;
+        const phTanah = document.getElementById('phTanah').value;
         const statusP = document.getElementById('statusP').value;
+        const tglSebarInput = document.getElementById('tglSebar').value;
+
+        // Ambil Varietas Benih
+        const valVarietas = document.getElementById('varietasBenih').value;
+        let namaVarietas = valVarietas;
+        if (valVarietas === "Lainnya") {
+            namaVarietas = document.getElementById('varietasCustom').value || "Padi Unggul";
+        }
+
+        if (!tglSebarInput) {
+            alert("Silakan pilih Rencana Tanggal Sebar Benih!");
+            return;
+        }
 
         if (isNaN(inputLuas) || inputLuas <= 0) {
             alert("Silakan masukkan besaran luas lahan!");
             return;
         }
 
+        // Kalkulasi Tanggal Real
+        const baseDate = new Date(tglSebarInput);
+        
+        const tglPraTanam = addDays(baseDate, -12);
+        const tglOlah = addDays(baseDate, -8);
+        const tglPraTumbuh = addDays(baseDate, -4);
+        const tglRendam = addDays(baseDate, -2);
+        const tglPeram = addDays(baseDate, -1);
+        const tglPurna = addDays(baseDate, 12);
+        const tglPupuk1 = addDays(baseDate, 22);
+        const tglPupuk2 = addDays(baseDate, 42);
+        const tglPupuk3 = addDays(baseDate, 55);
+
         let luasHa = 0;
         let infoText = "";
+        let teksLuasWA = "";
 
         if (satuan === "ha") {
             luasHa = inputLuas;
             infoText = `Luas Lahan Terbaca: <strong>${formatAngka(luasHa.toFixed(4))} ha</strong>`;
+            teksLuasWA = `${formatAngka(luasHa.toFixed(4))} ha`;
         } else if (satuan === "m2") {
             luasHa = inputLuas / 10000;
             infoText = `Hasil Konversi: <strong>${formatAngka(inputLuas)} m²</strong> = <strong>${formatAngka(luasHa.toFixed(5))} ha</strong>`;
+            teksLuasWA = `${formatAngka(inputLuas)} m² (${formatAngka(luasHa.toFixed(4))} ha)`;
         } else if (satuan === "bata") {
             const luasM2 = inputLuas * 14.0625;
             luasHa = luasM2 / 10000;
             infoText = `Hasil Konversi: <strong>${formatAngka(inputLuas)} Bata</strong> (~${formatAngka(luasM2.toFixed(2))} m²) = <strong>${formatAngka(luasHa.toFixed(5))} ha</strong>`;
+            teksLuasWA = `${formatAngka(inputLuas)} Bata (~${formatAngka(luasM2.toFixed(1))} m²)`;
         }
 
-        // Rumus Logistik berbasis Buku Saku
-        const benihTotal = 75 * luasHa;
-        const herbiTotal = 2 * luasHa; // Basis 2 Liter/Ha
-        const herbiMl = herbiTotal * 1000;
-        const organikTotal = 2000 * luasHa;
+        // Logistik Kebutuhan Lahan
+        const benihTotal = 75 * luasHa;             
+        const herbiPratanamTotal = 2 * luasHa;
+        const herbiTotal = 2 * luasHa;
+
+        let dosisOrganikPerHa = 1000;
+        let labelKohe = "Kompos";
+
+        if (jenisOrganik === "ayam") {
+            dosisOrganikPerHa = 2000;
+            labelKohe = "Kohe Ayam";
+        } else if (jenisOrganik === "domba") {
+            dosisOrganikPerHa = 3000;
+            labelKohe = "Kohe Domba/Kambing";
+        } else if (jenisOrganik === "sapi") {
+            dosisOrganikPerHa = 5000;
+            labelKohe = "Kohe Sapi";
+        } else {
+            dosisOrganikPerHa = 1000;
+            labelKohe = "Kompos/Organik Padat";
+        }
+        const organikTotal = dosisOrganikPerHa * luasHa;
         
+        let dolomitPerHa = phTanah === "sangat_asam" ? 1000 : (phTanah === "sedang_asam" ? 500 : 0);
+        const dolomitTotal = dolomitPerHa * luasHa;
+
         let sp36PerHa = statusP === "Rendah" ? 100 : (statusP === "Sedang" ? 75 : 50);
         const sp36Total = sp36PerHa * luasHa;
         
         const npkTotal = 400 * luasHa;
-        const ureaTotal = 300 * luasHa;
+        const npkAplikasi1 = 300 * luasHa;
+        const npkAplikasi2 = 100 * luasHa;
 
-        // Distribusi Output ke Tabel HTML
+        const ureaTotal = 300 * luasHa;
+        const ureaAplikasi1 = 150 * luasHa;
+        const ureaAplikasi2 = 150 * luasHa;
+
+        const pocTotal = 5 * luasHa;
+        const pocApl1 = pocTotal * 0.3;
+        const pocApl2 = pocTotal * 0.35;
+        const pocApl3 = pocTotal * 0.35;
+
+        const silikaTotal = 3 * luasHa;
+        const silikaPerApl = silikaTotal / 3;
+
+        // Ambil Nilai Asumsi Harga
+        const hUrea = parseFloat(document.getElementById('hargaUrea').value) || 0;
+        const hNpk = parseFloat(document.getElementById('hargaNpk').value) || 0;
+        const hBenih = parseFloat(document.getElementById('hargaBenih').value) || 0;
+        const hOrganik = parseFloat(document.getElementById('hargaOrganik').value) || 0;
+        const hHerbi = parseFloat(document.getElementById('hargaHerbi').value) || 0;
+        const hPoc = parseFloat(document.getElementById('hargaPoc').value) || 0;
+
+        // Kalkulasi Estimasi Biaya
+        const bBenih = benihTotal * hBenih;
+        const bUrea = ureaTotal * hUrea;
+        const bNpk = npkTotal * hNpk;
+        const bOrganik = organikTotal * hOrganik;
+        const bHerbi = (herbiPratanamTotal + herbiTotal) * hHerbi;
+        const bPocSilika = (pocTotal + silikaTotal) * hPoc;
+        const bDolomit = dolomitTotal * 1000;
+
+        const totalBiaya = bBenih + bUrea + bNpk + bOrganik + bHerbi + bPocSilika + bDolomit;
+
+        // Simpan Data untuk WA
+        globalHasilWA = {
+            nama: namaPetani,
+            luasText: teksLuasWA,
+            varietas: namaVarietas,
+            tglRendam: formatDateID(tglRendam),
+            tglPeram: formatDateID(tglPeram),
+            tglSebar: formatDateID(baseDate),
+            benih: formatAngka(benihTotal.toFixed(1)),
+            urea: formatAngka(ureaTotal.toFixed(1)),
+            npk: formatAngka(npkTotal.toFixed(1)),
+            organik: formatAngka(organikTotal.toFixed(0)),
+            labelOrganik: labelKohe,
+            herbiPratanam: formatAngka(herbiPratanamTotal.toFixed(2)),
+            herbiPratumbuh: formatAngka(herbiTotal.toFixed(2)),
+            biaya: formatRupiah(totalBiaya)
+        };
+
+        // Render Tabel Biaya
+        const htmlBiaya = `
+            <tr><td>Benih Padi (${namaVarietas})</td><td>${formatAngka(benihTotal.toFixed(1))} Kg</td><td>Rp ${formatRupiah(bBenih)}</td></tr>
+            <tr><td>Pupuk Urea</td><td>${formatAngka(ureaTotal.toFixed(1))} Kg</td><td>Rp ${formatRupiah(bUrea)}</td></tr>
+            <tr><td>Pupuk NPK Phonska</td><td>${formatAngka(npkTotal.toFixed(1))} Kg</td><td>Rp ${formatRupiah(bNpk)}</td></tr>
+            <tr><td>Pupuk Organik Padat (${labelKohe})</td><td>${formatAngka(organikTotal.toFixed(0))} Kg</td><td>Rp ${formatRupiah(bOrganik)}</td></tr>
+            <tr><td>Herbisida (Pra-Tanam & Pra-Tumbuh)</td><td>${formatAngka((herbiPratanamTotal + herbiTotal).toFixed(2))} Liter</td><td>Rp ${formatRupiah(bHerbi)}</td></tr>
+            <tr><td>POC & Pupuk Silika</td><td>${formatAngka((pocTotal + silikaTotal).toFixed(2))} Liter/Kg</td><td>Rp ${formatRupiah(bPocSilika)}</td></tr>
+            ${dolomitTotal > 0 ? `<tr><td>Kapur Dolomit</td><td>${formatAngka(dolomitTotal.toFixed(0))} Kg</td><td>Rp ${formatRupiah(bDolomit)}</td></tr>` : ''}
+        `;
+
+        document.getElementById('biayaTableBody').innerHTML = htmlBiaya;
+        document.getElementById('totalBiayaAll').innerText = formatRupiah(totalBiaya);
+
+        // Update Label Varietas Benih
+        document.getElementById('labelVarietasBenih').innerText = namaVarietas;
+        const elementsBenihInline = document.querySelectorAll('.nama-benih-inline');
+        elementsBenihInline.forEach(el => el.innerText = namaVarietas);
+
+        // Render Tanggal di Tabel
+        document.getElementById('tgl_pratanam').innerText = formatDateID(tglPraTanam);
+        document.getElementById('tgl_olah').innerText = formatDateID(tglOlah);
+        document.getElementById('tgl_pratumbuh').innerText = formatDateID(tglPraTumbuh);
+        document.getElementById('tgl_rendam').innerText = formatDateID(tglRendam);
+        document.getElementById('tgl_peram').innerText = formatDateID(tglPeram);
+        document.getElementById('tgl_sebar_out').innerText = formatDateID(baseDate);
+        document.getElementById('tgl_purna').innerText = formatDateID(tglPurna);
+        document.getElementById('tgl_pupuk1').innerText = formatDateID(tglPupuk1);
+        document.getElementById('tgl_pupuk2').innerText = formatDateID(tglPupuk2);
+        document.getElementById('tgl_pupuk3').innerText = formatDateID(tglPupuk3);
+
+        // Render Angka Kebutuhan
         document.getElementById('flashBenih').innerText = formatAngka(benihTotal.toFixed(1));
+        document.getElementById('herbi_pratanarn').innerText = formatAngka(herbiPratanamTotal.toFixed(2));
         document.getElementById('herbi_pra').innerText = formatAngka(herbiTotal.toFixed(2));
-        document.getElementById('herbi_pra_ml').innerText = formatAngka(herbiMl.toFixed(0));
         
-        document.getElementById('tab_benih').innerText = formatAngka(benihTotal.toFixed(1));
         document.getElementById('tab_organik').innerText = formatAngka(organikTotal.toFixed(0));
+        document.getElementById('tab_dolomit').innerText = formatAngka(dolomitTotal.toFixed(0));
+        document.getElementById('tab_benih1').innerText = formatAngka(benihTotal.toFixed(1));
+        document.getElementById('tab_benih2').innerText = formatAngka(benihTotal.toFixed(1));
         document.getElementById('tab_sp36').innerText = formatAngka(sp36Total.toFixed(1));
         
-        // Pembagian Pupuk Susulan I dan II
-        document.getElementById('tab_npk1').innerText = formatAngka((npkTotal * 0.4).toFixed(1));
-        document.getElementById('tab_urea1').innerText = formatAngka((ureaTotal * 0.3).toFixed(1));
-        document.getElementById('tab_silika1').innerText = formatAngka((1 * luasHa).toFixed(2));
-        
-        document.getElementById('tab_npk2').innerText = formatAngka((npkTotal * 0.6).toFixed(1));
-        document.getElementById('tab_urea2').innerText = formatAngka((ureaTotal * 0.4).toFixed(1));
-        document.getElementById('tab_silika2').innerText = formatAngka((1 * luasHa).toFixed(2));
-        
-        // Fase Bunting
-        document.getElementById('tab_urea3').innerText = formatAngka((ureaTotal * 0.3).toFixed(1));
-        document.getElementById('tab_silika3').innerText = formatAngka((1 * luasHa).toFixed(2));
+        document.getElementById('tab_npk1').innerText = formatAngka(npkAplikasi1.toFixed(1));
+        document.getElementById('tab_npk2').innerText = formatAngka(npkAplikasi2.toFixed(1));
+        document.getElementById('tab_urea1').innerText = formatAngka(ureaAplikasi1.toFixed(1));
+        document.getElementById('tab_urea2').innerText = formatAngka(ureaAplikasi2.toFixed(1));
+
+        document.getElementById('tab_poc1').innerText = formatAngka(pocApl1.toFixed(2));
+        document.getElementById('tab_poc2').innerText = formatAngka(pocApl2.toFixed(2));
+        document.getElementById('tab_poc3').innerText = formatAngka(pocApl3.toFixed(2));
+
+        document.getElementById('tab_silika1').innerText = formatAngka(silikaPerApl.toFixed(2));
+        document.getElementById('tab_silika2').innerText = formatAngka(silikaPerApl.toFixed(2));
+        document.getElementById('tab_silika3').innerText = formatAngka(silikaPerApl.toFixed(2));
 
         document.getElementById('conversionInfo').innerHTML = infoText;
         document.getElementById('resultContainer').style.display = 'block';
     }
 
+    function kirimKeWA() {
+        const noHP = document.getElementById('hpPetani').value.replace(/[^0-9]/g, '');
+        const d = globalHasilWA;
+        
+        let pesan = `*JADWAL & LOGISTIK TABELA PM-AAS*\n`;
+        pesan += `*BPP KARANGJAYA*\n\n`;
+        pesan += `Petani: *${d.nama}*\n`;
+        pesan += `Luas Lahan: *${d.luasText}*\n`;
+        pesan += `Varietas Benih: *${d.varietas}*\n\n`;
+        pesan += `*📅 JADWAL PENTING BENIH:*\n`;
+        pesan += `1. *Mulai Rendam Benih:* ${d.tglRendam} (12-24 Jam)\n`;
+        pesan += `2. *Mulai Peram Benih:* ${d.tglPeram} (24-36 Jam)\n`;
+        pesan += `3. *Tanam / Sebar Benih:* ${d.tglSebar} (Saat Melentis)\n\n`;
+        pesan += `*🌾 REKOMENDASI HERBISIDA:*\n`;
+        pesan += `• Pra-Tumbuh: _Rilof 500 EC / Nabu 50 EC / Sponsor 500 EC_\n`;
+        pesan += `• Purna-Tumbuh (Spot): _Nominee 100 SC / Rikstar 89 SL_\n\n`;
+        pesan += `*💰 KEBUTUHAN & ESTIMASI BIAYA:* Rp *${d.biaya}*\n`;
+        pesan += `• Benih (${d.varietas}): *${d.benih} Kg*\n`;
+        pesan += `• Urea: *${d.urea} Kg* | NPK: *${d.npk} Kg*\n`;
+        pesan += `• ${d.labelOrganik}: *${d.organik} Kg*\n`;
+        pesan += `• Herbisida Pra-Tanam: *${d.herbiPratanam} L*\n`;
+        pesan += `• Herbisida Pra-Tumbuh: *${d.herbiPratumbuh} L*\n\n`;
+        pesan += `_Dibuat via Aplikasi Kalkulator PM-AAS BPP Karangjaya_`;
+
+        const encodedPesan = encodeURIComponent(pesan);
+        
+        if (noHP !== "") {
+            window.open(`https://wa.me/${noHP}?text=${encodedPesan}`, '_blank');
+        } else {
+            window.open(`https://wa.me/?text=${encodedPesan}`, '_blank');
+        }
+    }
+
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    function formatDateID(dateObj) {
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return dateObj.toLocaleDateString('id-ID', options);
+    }
+
     function formatAngka(val) {
         return parseFloat(val).toString().replace('.', ',');
+    }
+
+    function formatRupiah(val) {
+        return Math.round(val).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 </script>
 </body>
