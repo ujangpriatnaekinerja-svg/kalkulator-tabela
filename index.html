@@ -557,6 +557,25 @@
         }
     }
 
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    function formatDateID(date) {
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return date.toLocaleDateString('id-ID', options);
+    }
+
+    function formatAngka(num) {
+        return parseFloat(num).toLocaleString('id-ID');
+    }
+
+    function formatRupiah(num) {
+        return Math.round(num).toLocaleString('id-ID');
+    }
+
     function hitungTabelaAAS() {
         const namaPetani = document.getElementById('namaPetani').value || "Bapak/Ibu Petani";
         const inputLuas = parseFloat(document.getElementById('luasInput').value);
@@ -760,24 +779,29 @@
         const noHP = document.getElementById('hpPetani').value.replace(/[^0-9]/g, '');
         const d = globalHasilWA;
         
-        let pesan = `*JADWAL & LOGISTIK TABELA PM-AAS*\n`;
-        pesan += `*BPP KARANGJAYA*\n\n`;
-        pesan += `Petani: *${d.nama}*\n`;
-        pesan += `Luas Lahan: *${d.luasText}*\n`;
-        pesan += `Varietas Benih: *${d.varietas}*\n\n`;
-        pesan += `*📅 JADWAL PENTING BENIH:*\n`;
+        let pesan = `🌾 *JADWAL & LOGISTIK TABELA PM-AAS*\n`;
+        pesan += `🏛 *BPP KARANGJAYA*\n\n`;
+        pesan += `👤 *Petani:* ${d.nama}\n`;
+        pesan += `📐 *Luas Lahan:* ${d.luasText}\n`;
+        pesan += `🌱 *Varietas Benih:* ${d.varietas}\n\n`;
+        pesan += `----------------------------------------\n\n`;
+        pesan += `📅 *JADWAL PENTING BENIH:*\n`;
         pesan += `1. *Mulai Rendam Benih:* ${d.tglRendam} (12-24 Jam)\n`;
         pesan += `2. *Mulai Peram Benih:* ${d.tglPeram} (24-36 Jam)\n`;
         pesan += `3. *Tanam / Sebar Benih:* ${d.tglSebar} (Saat Melentis)\n\n`;
-        pesan += `*🌾 REKOMENDASI HERBISIDA:*\n`;
-        pesan += `• Pra-Tumbuh: _Rilof 500 EC / Nabu 50 EC / Sponsor 500 EC_\n`;
-        pesan += `• Purna-Tumbuh (Spot): _Nominee 100 SC / Rikstar 89 SL_\n\n`;
-        pesan += `*💰 KEBUTUHAN & ESTIMASI BIAYA:* Rp *${d.biaya}*\n`;
+        pesan += `🧪 *REKOMENDASI HERBISIDA:*\n`;
+        pesan += `• *Pra-Tumbuh:* _Rilof 500 EC / Nabu 50 EC / Sponsor 500 EC_\n`;
+        pesan += `• *Purna-Tumbuh (Spot):* _Nominee 100 SC / Rikstar 89 SL_\n\n`;
+        pesan += `💰 *KEBUTUHAN & ESTIMASI BIAYA:*\n`;
+        pesan += `*Total Biaya:* Rp ${d.biaya}\n\n`;
+        pesan += `📦 *Rincian Saprodi:*\n`;
         pesan += `• Benih (${d.varietas}): *${d.benih} Kg*\n`;
-        pesan += `• Urea: *${d.urea} Kg* | NPK: *${d.npk} Kg*\n`;
+        pesan += `• Urea: *${d.urea} Kg*\n`;
+        pesan += `• NPK Phonska: *${d.npk} Kg*\n`;
         pesan += `• ${d.labelOrganik}: *${d.organik} Kg*\n`;
-        pesan += `• Herbisida Pra-Tanam: *${d.herbiPratanam} L*\n`;
-        pesan += `• Herbisida Pra-Tumbuh: *${d.herbiPratumbuh} L*\n\n`;
+        pesan += `• Herbisida Pra-Tanam: *${d.herbiPratanam} Liter*\n`;
+        pesan += `• Herbisida Pra-Tumbuh: *${d.herbiPratumbuh} Liter*\n\n`;
+        pesan += `----------------------------------------\n`;
         pesan += `_Dibuat via Aplikasi Kalkulator PM-AAS BPP Karangjaya_`;
 
         const encodedPesan = encodeURIComponent(pesan);
@@ -787,25 +811,6 @@
         } else {
             window.open(`https://wa.me/?text=${encodedPesan}`, '_blank');
         }
-    }
-
-    function addDays(date, days) {
-        const result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-    }
-
-    function formatDateID(dateObj) {
-        const options = { day: 'numeric', month: 'short', year: 'numeric' };
-        return dateObj.toLocaleDateString('id-ID', options);
-    }
-
-    function formatAngka(val) {
-        return parseFloat(val).toString().replace('.', ',');
-    }
-
-    function formatRupiah(val) {
-        return Math.round(val).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 </script>
 </body>
